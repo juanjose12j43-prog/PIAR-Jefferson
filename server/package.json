@@ -1,0 +1,19 @@
+{
+  "name": "piar-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/db/seed.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "better-sqlite3": "^12.4.1",
+    "cors": "^2.8.5",
+    "docx": "^9.7.1",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  }
+}

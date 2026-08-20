@@ -1,0 +1,1932 @@
+/* =========================================================================
+   Sistema de diseño — Colegio Jefferson
+   Paleta extraída del escudo institucional (client/public/escudo-jefferson.png).
+
+   El ROJO institucional es el color principal: identidad, navegación,
+   acciones y encabezados. El azul del escudo pasa a color secundario
+   (información, marco normativo internacional, elementos de apoyo).
+
+   Cómo se evita que el rojo de marca se confunda con el rojo de alerta:
+   el rojo de acción siempre aparece como relleno sólido en controles
+   (botones, pestañas, burbujas), mientras que el estado crítico aparece
+   siempre como etiqueta con borde, símbolo (▲) y la palabra "vencido".
+   Difieren en forma y en texto, no solo en tono.
+
+   Los colores de estado salen del propio escudo:
+     verde jaguar   → al día
+     dorado del sol → próximo a vencer
+     rojo profundo  → vencido
+   El color nunca es el único portador de significado: cada estado se
+   acompaña de icono y texto (WCAG 2.1, criterio 1.4.1 "uso del color").
+   ========================================================================= */
+:root {
+  /* --- Marca --- */
+  --cj-rojo: #b21e28;
+  --cj-rojo-oscuro: #8e1820;
+  --cj-rojo-profundo: #6d1218;
+  --cj-azul: #16365c;
+  --cj-azul-claro: #2e70b8;
+  --cj-verde: #43862f;
+  --cj-dorado: #e3a81b;
+
+  /* --- Superficies y texto. El fondo lleva una insinuación cálida para
+         que el rojo no quede flotando sobre un gris azulado. --- */
+  --color-bg: #f8f5f4;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fdfaf9;
+  --color-border: #e6dedd;
+  --color-border-strong: #cbbdbc;
+  --color-text: #241b1c;
+  --color-text-muted: #6b5c5d;
+
+  /* --- Principal: rojo institucional --- */
+  --color-primary: var(--cj-rojo);
+  --color-primary-dark: var(--cj-rojo-oscuro);
+  --color-primary-soft: #fbeced;
+  --color-primary-border: #eec6c9;
+  --color-accent: var(--cj-rojo-oscuro);
+
+  /* --- Secundario: azul del escudo. Sostiene lo informativo y el carril
+         internacional de la línea de tiempo, sin competir con el rojo. --- */
+  --color-secundario: var(--cj-azul);
+  --color-secundario-soft: #eaf0f7;
+  --color-secundario-border: #c3d3e4;
+
+  /* --- Identidad --- */
+  --color-brand: var(--cj-rojo);
+  --color-brand-dark: var(--cj-rojo-oscuro);
+  --color-brand-soft: #fbeced;
+
+  /* --- Estados. Los tonos "-texto" son los que cumplen contraste AA
+         sobre fondo claro; los planos se usan como relleno o barra.
+         "Vencido" usa el rojo profundo, más oscuro que el rojo de marca,
+         para que una alerta no se confunda con un botón. --- */
+  --color-success: var(--cj-verde);
+  --color-success-texto: #35691f;
+  --color-success-soft: #eef5e9;
+  --color-warning: var(--cj-dorado);
+  --color-warning-texto: #8a6410;
+  --color-warning-soft: #fdf4e0;
+  --color-danger: var(--cj-rojo-profundo);
+  --color-danger-texto: var(--cj-rojo-profundo);
+  --color-danger-soft: #f9e4e4;
+
+  /* --- Sidebar en rojo institucional --- */
+  --color-sidebar-bg: var(--cj-rojo-oscuro);
+  --color-sidebar-text: #f0cdcf;
+  --color-sidebar-text-activo: #ffffff;
+  --color-sidebar-hover: rgba(255, 255, 255, 0.12);
+  --color-sidebar-borde: rgba(255, 255, 255, 0.18);
+  --color-sidebar-marcador: var(--cj-dorado);
+
+  /* --- Foco visible: anillo de alto contraste para navegación por teclado.
+         Va en azul, no en rojo, para que se distinga del color de marca y
+         siga siendo visible sobre superficies rojas. --- */
+  --focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px var(--cj-azul-claro);
+
+  --shadow-card: 0 1px 3px rgba(66, 30, 32, 0.09), 0 1px 2px rgba(66, 30, 32, 0.05);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Los botones e iconos SVG comparten línea base */
+button svg,
+a svg {
+  vertical-align: -2px;
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding: 0 8px 20px;
+  border-bottom: 1px solid var(--color-sidebar-borde);
+}
+
+/* El escudo va sobre un disco blanco: el logo original es a color sobre
+   fondo claro y el cuadrante rojo del escudo se perdería si se colocara
+   directamente sobre el rojo del sidebar. */
+.sidebar-escudo {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  padding: 4px;
+  object-fit: contain;
+}
+
+.sidebar-brand-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar-brand-mark {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-sidebar-text-activo);
+}
+
+.sidebar-brand-sub {
+  font-size: 13px;
+  color: var(--color-sidebar-text);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+  border-left: 3px solid transparent;
+  color: var(--color-sidebar-text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text-activo);
+}
+
+/* Sobre el sidebar rojo, la sección activa se marca con el dorado del sol
+   del escudo: es el único color de la paleta que contrasta contra el rojo
+   sin recurrir al blanco, que ya está usado por el texto. */
+.sidebar-link.active {
+  background: var(--color-sidebar-hover);
+  border-left-color: var(--color-sidebar-marcador);
+  color: var(--color-sidebar-text-activo);
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sidebar-footer {
+  font-size: 13px;
+  color: var(--color-sidebar-text);
+  padding: 12px 8px 0;
+  border-top: 1px solid var(--color-sidebar-borde);
+}
+
+/* Content */
+.app-content {
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 1400px;
+}
+
+.placeholder-page {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  max-width: 640px;
+}
+
+.placeholder-badge {
+  display: inline-block;
+  background: var(--color-warning-soft);
+  color: var(--color-warning-texto);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+/* Dashboard */
+/* El encabezado de cada página lleva un filete rojo: repite la firma visual
+   del membrete institucional y ancla la marca en el área de contenido, no
+   solo en el sidebar. */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid var(--color-primary);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  color: var(--color-primary-dark);
+}
+
+.dashboard-subtitle {
+  color: var(--color-text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.kpi-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 20px 22px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.kpi-card.warning {
+  border-left-color: var(--color-warning);
+}
+
+.kpi-card.danger {
+  border-left-color: var(--color-danger);
+}
+
+.kpi-card.success {
+  border-left-color: var(--color-success);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  line-height: 1.15;
+}
+
+.kpi-card.warning .kpi-value {
+  color: var(--color-warning-texto);
+}
+
+.kpi-card.danger .kpi-value {
+  color: var(--color-danger-texto);
+}
+
+.kpi-card.success .kpi-value {
+  color: var(--color-success-texto);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 22px 24px;
+}
+
+/* Título de tarjeta con marca roja a la izquierda: repite el gesto del
+   filete del encabezado a escala menor y da ritmo a toda la página. */
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  line-height: 1.3;
+}
+
+.alertas-panel {
+  grid-column: 1 / -1;
+}
+
+.alerta-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.alerta-item:last-child {
+  border-bottom: none;
+}
+
+.alerta-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.alerta-tag.vencido {
+  background: var(--color-danger-soft);
+  color: var(--color-danger-texto);
+}
+
+.alerta-tag.proximo {
+  background: var(--color-warning-soft);
+  color: var(--color-warning-texto);
+}
+
+.alerta-empty {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+.seguimiento-bar {
+  display: flex;
+  height: 28px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.seguimiento-bar-al-dia {
+  background: var(--color-success);
+}
+
+.seguimiento-bar-atrasado {
+  background: var(--color-danger);
+}
+
+.seguimiento-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.seguimiento-legend > span {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* El punto de leyenda ahora lleva un símbolo dentro (✓ / ▲): el color deja
+   de ser el único diferenciador entre "al día" y "atrasado". */
+.legend-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--color-surface);
+}
+
+.legend-dot-al-dia {
+  background: var(--color-success-texto);
+}
+
+.legend-dot-atrasado {
+  background: var(--color-danger-texto);
+}
+
+.reporte-section {
+  margin-top: 8px;
+}
+
+/* Acción principal en rojo institucional. Es relleno sólido con texto
+   blanco, forma que no comparte con ninguna etiqueta de estado. */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reporte-output {
+  margin-top: 20px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.6;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.reporte-error {
+  color: var(--color-danger-texto);
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.loading-text {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Asistente de anexos (Fase 2) ===== */
+
+.pestanas {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pestana {
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+}
+
+.pestana.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.seccion-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+.guia-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.guia-card-titulo {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.guia-anexo {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+.guia-detalle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.texto-ayuda {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.textarea-entrada {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 14px;
+}
+
+.textarea-entrada:focus {
+  border-color: var(--color-primary);
+}
+
+.select-entrada {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--color-surface);
+}
+
+.selector-fila {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.campo-formulario {
+  margin-bottom: 14px;
+}
+
+.campo-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.modalidad-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 18px;
+}
+
+.modalidad-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.modalidad-tab.active {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.recomendacion-card {
+  margin-top: 18px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.recomendacion-badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.recomendacion-titulo {
+  margin: 4px 0 10px;
+  font-size: 16px;
+  color: var(--color-primary-dark);
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editor-acciones {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.btn-secundario:hover {
+  background: var(--color-bg);
+}
+
+.btn-exportar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--color-success);
+  color: var(--color-surface);
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-exportar:hover {
+  background: var(--color-success-texto);
+}
+
+.editor-documento {
+  width: 100%;
+  min-height: 420px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 28px 32px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.7;
+  background: var(--color-warning-soft);
+  resize: vertical;
+}
+
+.editor-documento:focus {
+  border-color: var(--color-primary);
+}
+
+.mensaje-ok {
+  color: var(--color-success-texto);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+/* ===== Centro de conocimiento (Fase 3) ===== */
+
+/* --- Conceptos clave --- */
+
+.conceptos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.concepto-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.concepto-icono {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.concepto-titulo {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.concepto-texto {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0 0 12px;
+  flex: 1;
+}
+
+.concepto-fuente {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+/* --- El documento PIAR (anatomía del documento) --- */
+
+.docpiar {
+  max-width: 900px;
+}
+
+.docpiar-intro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 18px 22px;
+  margin: 0 0 28px;
+}
+
+.docpiar-bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Conector vertical entre anexos: sugiere que es un solo expediente */
+.docpiar-conector {
+  width: 3px;
+  height: 34px;
+  background: var(--color-primary-border);
+  border-radius: 2px;
+}
+
+.docpiar-anexo {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px 28px;
+}
+
+.docpiar-anexo.destacado {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 2px 10px rgba(30, 90, 168, 0.13);
+}
+
+.docpiar-cabecera {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.docpiar-numero {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.docpiar-cabecera-textos {
+  flex: 1;
+}
+
+.docpiar-titulo-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.docpiar-titulo {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.docpiar-etiqueta {
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-border);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.docpiar-pregunta {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.docpiar-proposito {
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0 0 14px;
+}
+
+.docpiar-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.docpiar-chip {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 12.5px;
+  padding: 5px 12px;
+  color: var(--color-text);
+}
+
+.docpiar-chip strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.docpiar-secciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.docpiar-seccion {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.docpiar-anexo.destacado .docpiar-seccion {
+  border-left-color: var(--color-primary);
+}
+
+.docpiar-seccion-nombre {
+  margin: 0 0 5px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.docpiar-seccion-para {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.docpiar-cierre {
+  margin-top: 28px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+
+.docpiar-cierre-etiqueta {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 4px 12px;
+  margin-bottom: 10px;
+}
+
+.docpiar-cierre-texto {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* --- El documento PIAR: facsímil anotado del formato oficial --- */
+
+.fpiar-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.fpiar-fuente {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin: -14px 0 26px;
+}
+
+/* Cabecera de cada anexo */
+.fpiar-anexo {
+  margin-bottom: 44px;
+}
+
+.fpiar-anexo-cabecera {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  padding: 18px 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.fpiar-anexo-cabecera.destacado {
+  background: var(--color-primary-soft);
+}
+
+.fpiar-rotulo {
+  flex-shrink: 0;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.fpiar-anexo-titulo {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.fpiar-anexo-subtitulo {
+  margin: 2px 0 8px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.fpiar-anexo-resumen {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* Filas: fragmento de hoja + anotaciones al margen */
+.fpiar-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0 22px;
+  align-items: stretch;
+}
+
+.fpiar-anotaciones {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+/* La "hoja" del formato: fragmentos continuos que forman una página */
+.fpiar-hoja {
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  padding: 16px 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.fpiar-hoja-membrete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid var(--color-border);
+  border-radius: 6px 6px 0 0;
+  padding-top: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.fpiar-membrete-marca {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+}
+
+.fpiar-membrete-decreto {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.fpiar-hoja-pie {
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0 0 6px 6px;
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+  padding-top: 12px;
+  padding-bottom: 14px;
+  border-top: 1px dashed var(--color-border);
+}
+
+/* Secciones dentro de la hoja */
+.fpiar-seccion-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  margin-bottom: 12px;
+}
+
+/* Marcador numerado que ancla la sección con su anotación */
+.fpiar-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-warning);
+  color: var(--color-surface);
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+th .fpiar-marcador {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Campos del formato: etiqueta + línea de diligenciamiento */
+.fpiar-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 8px 18px;
+}
+
+.fpiar-campo {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  padding: 3px 0;
+}
+
+.fpiar-campo-label {
+  color: var(--color-text);
+  line-height: 1.45;
+}
+
+.fpiar-campo-linea {
+  flex: 1;
+  min-width: 40px;
+  border-bottom: 1px dotted var(--color-border-strong);
+  height: 1em;
+}
+
+.fpiar-parrafo {
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.fpiar-nota {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--color-text-muted);
+  border-left: 3px solid var(--color-warning);
+  background: var(--color-warning-soft);
+  border-radius: 0 6px 6px 0;
+  padding: 6px 10px;
+}
+
+/* Tablas del formato */
+.fpiar-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+
+.fpiar-tabla th {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  line-height: 1.4;
+  vertical-align: top;
+}
+
+.fpiar-tabla td {
+  border: 1px solid var(--color-border);
+  padding: 10px;
+  vertical-align: bottom;
+}
+
+.fpiar-tabla-area {
+  font-weight: 600;
+  background: var(--color-surface-alt);
+  white-space: normal;
+  vertical-align: middle !important;
+  font-size: 12px;
+}
+
+/* Firmas */
+.fpiar-firmas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+  padding-top: 18px;
+}
+
+.fpiar-firma {
+  flex: 1;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fpiar-firma-linea {
+  border-bottom: 1px solid var(--color-border-strong);
+  height: 22px;
+}
+
+.fpiar-firma-label {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+/* Anotación al margen: nota adhesiva sobria */
+.fpiar-anotacion {
+  display: flex;
+  gap: 10px;
+  background: var(--color-warning-soft);
+  border: 1px solid var(--color-warning);
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.fpiar-anotacion-numero {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-warning);
+  color: var(--color-surface);
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.fpiar-anotacion-titulo {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.fpiar-anotacion-texto {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--color-warning-texto);
+}
+
+/* En pantallas angostas, las anotaciones pasan debajo de cada sección */
+@media (max-width: 980px) {
+  .fpiar-fila {
+    grid-template-columns: 1fr;
+  }
+
+  .fpiar-anotaciones {
+    padding: 10px 0 16px;
+  }
+
+  .fpiar-anotaciones:empty {
+    display: none;
+  }
+}
+
+/* --- Línea de tiempo dual global ↔ Colombia --- */
+
+.timeline-encabezados {
+  display: grid;
+  grid-template-columns: 1fr 90px 1fr;
+  margin-bottom: 14px;
+}
+
+.timeline-encabezado {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Los dos carriles se reparten los colores del escudo: el marco global va
+   en azul (secundario) y el colombiano en rojo institucional, que es el
+   que corresponde a la casa. */
+.timeline-encabezado.global {
+  color: var(--color-secundario);
+}
+
+.timeline-encabezado.colombia {
+  color: var(--color-primary);
+}
+
+.timeline {
+  position: relative;
+}
+
+/* Espina cronológica central */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: var(--color-primary-border);
+  border-radius: 2px;
+}
+
+.timeline-fila {
+  display: grid;
+  grid-template-columns: 1fr 90px 1fr;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.timeline-espina {
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-anio {
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.timeline-anio.destacado {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.hito-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px;
+}
+
+/* El color del borde indica el carril */
+.hito-card.global {
+  border-left: 4px solid var(--color-secundario);
+}
+
+.hito-card.colombia {
+  border-left: 4px solid var(--color-primary);
+}
+
+.hito-card.destacado {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning-texto);
+}
+
+.hito-card.destacado.global {
+  border-left-color: var(--color-secundario);
+}
+
+.hito-card.destacado.colombia {
+  border-left-color: var(--color-primary);
+}
+
+.hito-insignia {
+  display: inline-block;
+  background: var(--color-warning-soft);
+  border: 1px solid var(--color-warning);
+  color: var(--color-warning-texto);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+}
+
+.hito-titulo {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.hito-entidad {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 8px;
+}
+
+.hito-texto {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hito-conexion {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.hito-conexion.global {
+  background: var(--color-secundario-soft);
+  color: var(--color-secundario);
+}
+
+.hito-conexion.colombia {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+/* Franja narrativa Salamanca → Cali → Foros */
+.hilo-narrativo {
+  margin-top: 28px;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+
+.hilo-titulo {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+
+.hilo-pasos {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.hilo-paso {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  padding-right: 24px;
+}
+
+.hilo-anio {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.hilo-texto {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.hilo-flecha {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+/* En pantallas angostas el timeline colapsa a una columna */
+@media (max-width: 800px) {
+  .timeline-encabezados {
+    display: none;
+  }
+
+  .timeline::before {
+    left: 45px;
+  }
+
+  .timeline-fila {
+    grid-template-columns: 90px 1fr;
+  }
+
+  .timeline-espina {
+    grid-row: 1;
+    grid-column: 1;
+    justify-content: flex-start;
+    padding-left: 8px;
+  }
+
+  .timeline-celda {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .hilo-flecha {
+    display: none;
+  }
+}
+
+/* --- Wiki con IA --- */
+
+.wiki-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+}
+
+.wiki-conversacion {
+  min-height: 260px;
+  max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px 2px;
+  margin-bottom: 14px;
+}
+
+.wiki-sugerencias-titulo {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 10px;
+}
+
+.wiki-sugerencia {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.wiki-sugerencia:hover {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.wiki-burbuja {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.wiki-burbuja.usuario {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border-bottom-right-radius: 4px;
+}
+
+.wiki-burbuja.asistente {
+  align-self: flex-start;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-bottom-left-radius: 4px;
+}
+
+.wiki-burbuja.escribiendo {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.wiki-entrada {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.wiki-textarea {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* =========================================================================
+   Capa de accesibilidad
+   Una aplicación sobre inclusión educativa que no es accesible se contradice
+   a sí misma. Estas reglas van al final para que ganen por cascada sobre
+   cualquier estilo previo de componente.
+   ========================================================================= */
+
+/* --- Enlace de salto -----------------------------------------------------
+   Oculto hasta recibir foco. Es el primer tabulador de la página. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* --- Texto solo para lectores de pantalla -------------------------------
+   Visualmente oculto pero sí anunciado. No se usa display:none porque eso
+   lo elimina también del árbol de accesibilidad. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Foco visible --------------------------------------------------------
+   :focus-visible solo se activa con teclado, así que el anillo no aparece
+   al hacer clic con el ratón. El outline transparente conserva el foco en
+   modo de alto contraste de Windows, donde box-shadow no se dibuja. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-md);
+}
+
+/* Dentro del sidebar rojo el anillo se invierte: primero el propio rojo
+   para separarlo del fondo, luego blanco. */
+.sidebar a:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-sidebar-bg), 0 0 0 5px var(--color-surface);
+}
+
+/* main recibe foco por programa desde el enlace de salto, pero no debe
+   dibujar anillo: el usuario no lo enfocó, lo saltó. */
+.app-content:focus {
+  outline: none;
+}
+
+/* --- Tamaños mínimos de texto -------------------------------------------
+   11 px es ilegible para buena parte del profesorado. Se elevan los textos
+   auxiliares a 13 px, que es el mínimo cómodo en pantalla. */
+.kpi-label,
+.dashboard-subtitle,
+.alerta-tag,
+.texto-ayuda,
+.sidebar-footer,
+.placeholder-badge {
+  font-size: 13px;
+}
+
+/* --- Etiquetas de formulario --------------------------------------------
+   Área de clic amplia y asociación visual clara con su control. */
+.campo-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* --- Objetivos táctiles --------------------------------------------------
+   44 px es el mínimo recomendado por WCAG 2.2 (criterio 2.5.8) para que un
+   control sea alcanzable con precisión motriz reducida. */
+button,
+.sidebar-link,
+select {
+  min-height: 44px;
+}
+
+/* --- Estados por icono y forma, no solo por color ------------------------
+   Refuerza WCAG 1.4.1: quien no distingue rojo de verde debe poder leer el
+   estado igual. El icono se inserta por CSS para no tocar cada componente. */
+.alerta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid currentColor;
+}
+
+.alerta-tag.vencido::before {
+  content: '▲';
+  font-size: 11px;
+}
+
+.alerta-tag.proximo::before {
+  content: '●';
+  font-size: 11px;
+}
+
+/* --- Movimiento reducido -------------------------------------------------
+   Respeta a quien configuró el sistema para evitar animaciones (migraña,
+   trastornos vestibulares, sensibilidad al movimiento). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Alto contraste ------------------------------------------------------
+   Refuerza los bordes cuando el sistema pide más contraste. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: #8b96a4;
+    --color-text-muted: #3d4756;
+  }
+
+  .card,
+  .kpi-card {
+    border: 1px solid var(--color-border);
+  }
+}
+
+/* --- Responsive ----------------------------------------------------------
+   El sidebar fijo de 260 px dejaba la aplicación inutilizable en portátiles
+   pequeños y tablets, que es justo el equipo que usa el profesorado en aula. */
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: none;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .app-content {
+    padding: 24px 20px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* =========================================================================
+   Portada en video — Tablero institucional
+   Se abre con póster + botón, nunca con autoplay: el audio que arranca solo
+   es una barrera (WCAG 2.1, 1.4.2) y compite con el resto del tablero.
+   ========================================================================= */
+.video-portada {
+  margin-bottom: 2rem;
+}
+
+.video-portada__marco {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 28px rgba(36, 27, 28, 0.13);
+  background: #10151c;
+  aspect-ratio: 16 / 9;
+}
+
+.video-portada__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-portada__disparador {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.15rem;
+  width: 100%;
+  height: 100%;
+  padding: 2rem 2.25rem;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  background-size: cover;
+  background-position: center;
+  font: inherit;
+  color: #fff;
+}
+
+.video-portada__velo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(16, 21, 28, 0.9) 0%,
+    rgba(16, 21, 28, 0.72) 46%,
+    rgba(16, 21, 28, 0.28) 100%
+  );
+}
+
+.video-portada__play {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  padding-left: 5px;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.video-portada__disparador:hover .video-portada__play,
+.video-portada__disparador:focus-visible .video-portada__play {
+  transform: scale(1.07);
+  background: var(--color-primary-dark);
+}
+
+.video-portada__disparador:focus-visible {
+  outline: 3px solid var(--cj-dorado);
+  outline-offset: -3px;
+}
+
+.video-portada__texto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-width: 46ch;
+}
+
+.video-portada__etiqueta {
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.video-portada__titulo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.video-portada__sub {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.video-portada__cta {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 2px solid var(--color-primary);
+  align-self: flex-start;
+  padding-bottom: 2px;
+}
+
+.video-portada__pie {
+  margin: 0.65rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 720px) {
+  .video-portada__disparador {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    gap: 0.8rem;
+  }
+  .video-portada__play { width: 54px; height: 54px; }
+  .video-portada__titulo { font-size: 1.2rem; }
+  .video-portada__sub { font-size: 0.82rem; }
+}

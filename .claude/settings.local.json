@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(pkill -f \"node src/index.js\")",
+      "Bash(lsof -i :5173 -sTCP:LISTEN -P)",
+      "Bash(curl -s http://localhost:4000/api/anexos/estudiantes)",
+      "Bash(curl -s -X PUT http://localhost:4000/api/anexos/1/guardar -H \"Content-Type: application/json\" -d '{\"tipoAnexo\":\"caracterizacion\",\"contenido\":\"## Información general\\\\nEl estudiante Samuel Torres cursa grado 1°.\\\\n\\\\n## Contexto familiar y escolar\\\\nVive con su núcleo familiar. [Por completar por el docente]\\\\n\\\\n## Barreras para el aprendizaje y la participación identificadas\\\\n- Dificultades en procesos de lectoescritura inicial.\\\\n- Requiere apoyo en seguimiento de instrucciones complejas.\"}')",
+      "Bash(curl -s -o anexo_prueba.docx -w \"%{http_code} %{content_type}\\\\n\" http://localhost:4000/api/anexos/31/exportar)",
+      "Bash(unzip -p anexo_prueba.docx word/document.xml)",
+      "Bash(curl -s -X POST http://localhost:4000/api/anexos/recomendar -H \"Content-Type: application/json\" -d '{\"contexto\":\"Estudiante nuevo con TEA en grado 3\"}')",
+      "Bash(curl -s -o anexo_ui.docx -w \"%{http_code}\\\\n\" -D headers.txt http://localhost:4000/api/anexos/32/exportar)",
+      "Bash(unzip -p anexo_ui.docx word/document.xml)",
+      "Bash(curl -s -o /dev/null -D - http://localhost:4000/api/anexos/32/exportar)",
+      "Bash(python3 -)",
+      "Bash(python3 -m pip install --quiet --target pylibs pypdf)",
+      "Bash(PYTHONPATH=pylibs python3 -)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -X POST http://localhost:4000/api/anexos/generar -H \"Content-Type: application/json\" -d '{\"estudianteId\":5,\"tipoAnexo\":\"ajustes\",\"datos\":\"Para matemáticas: el estudiante se distrae con las guías largas y le cuesta terminar los ejercicios escritos, pero cuando usamos material concreto \\(fichas, ábacos\\) participa muy bien y resuelve los problemas. Le gusta mucho el fútbol y los videojuegos. Quiero ajustar la forma de evaluar y las guías.\"}')",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(e['id'], e['nombre'], e['piar_id']\\) for e in d[:5]]\")",
+      "Bash(curl -s -X POST http://localhost:4000/api/anexos/generar -H \"Content-Type: application/json\" -d '{\"estudianteId\":17,\"tipoAnexo\":\"ajustes\",\"datos\":\"Para matemáticas: el estudiante se distrae con las guías largas y le cuesta terminar los ejercicios escritos, pero cuando usamos material concreto \\(fichas, ábacos\\) participa muy bien y resuelve los problemas. Le gusta mucho el fútbol y los videojuegos. Quiero ajustar la forma de evaluar y las guías.\"}')",
+      "Bash(find \"/Users/juansernal/.claude/projects/-Users-juansernal-Desktop-Marble-2\" -maxdepth 3 -type f 2>/dev/null)",
+      "Bash(ls -la \"/Users/juansernal/Desktop/portal-david-arango\" 2>&1)",
+      "Bash(grep -n \"color:\\\\s*[\\\\\"'\\\\`]\" calculos.js)",
+      "Bash(node test-vistas.js)",
+      "Bash(pkill -f \"http.server 8934\")",
+      "mcp__claude-in-chrome__tabs_create_mcp",
+      "Bash(python3 -c \"import json; json.load\\(open\\('/Users/juansernal/Desktop/App PIAR/.claude/launch.json'\\)\\)\")"
+    ]
+  }
+}

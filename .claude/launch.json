@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "piar-server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "server",
+      "port": 4000
+    },
+    {
+      "name": "piar-client",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "client",
+      "port": 5173,
+      "autoPort": true
+    },
+    {
+      "name": "marble-client",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/juansernal/Desktop/Marble 2/marble-headhunter"],
+      "port": 5173,
+      "autoPort": true
+    }
+  ]
+}
