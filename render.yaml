@@ -8,7 +8,10 @@ services:
     plan: free
     branch: main
     # Instala y construye el frontend, luego instala el backend que lo sirve.
-    buildCommand: npm install --prefix client && npm run build --prefix client && npm install --prefix server
+    # --include=dev es necesario porque NODE_ENV=production (más abajo) hace
+    # que "npm install" omita las devDependencies por defecto, y ahí vive
+    # Vite: hace falta para construir, aunque no para correr en producción.
+    buildCommand: npm install --prefix client --include=dev && npm run build --prefix client && npm install --prefix server
     startCommand: npm start --prefix server
     envVars:
       - key: NODE_ENV
