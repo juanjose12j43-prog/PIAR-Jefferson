@@ -1,0 +1,19 @@
+# Blueprint de Render: al conectar el repositorio, Render lee este archivo y
+# configura el servicio automáticamente (sin llenar el formulario a mano).
+# Panel → New + → Blueprint → seleccionar el repositorio PIAR-Jefferson.
+services:
+  - type: web
+    name: piar-jefferson
+    runtime: node
+    plan: free
+    branch: main
+    # Instala y construye el frontend, luego instala el backend que lo sirve.
+    buildCommand: npm install --prefix client && npm run build --prefix client && npm install --prefix server
+    startCommand: npm start --prefix server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # sync: false = Render pide el valor en su panel y no lo guarda en este
+      # archivo ni en el repositorio. Se pega una sola vez tras el primer deploy.
+      - key: ANTHROPIC_API_KEY
+        sync: false

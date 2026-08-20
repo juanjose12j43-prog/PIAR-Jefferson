@@ -20,6 +20,38 @@ cd client && npm run dev     # interfaz en http://localhost:5173
 asistente de anexos y la wiki. `cd server && npm run seed` recarga los datos
 ficticios de demostración.
 
+## Despliegue (Render)
+
+El proyecto está pensado para desplegarse como un único servicio web en
+[Render](https://render.com), definido en `render.yaml` (Blueprint):
+
+- **Build:** instala y construye `client/` (Vite → `client/dist`), luego
+  instala `server/`.
+- **Start:** `npm start --prefix server`, que arranca Express.
+- En producción (`NODE_ENV=production`) el propio Express sirve
+  `client/dist` como estáticos y hace *fallback* a `index.html` para
+  cualquier ruta que no sea `/api/*` (ver `server/src/index.js`) — un solo
+  servicio, una sola URL, sin problemas de CORS entre frontend y backend.
+- Se eligió Render sobre Netlify porque el backend corre como proceso Node
+  normal, sin el límite de tiempo por petición de las funciones serverless.
+  El reporte ejecutivo y la generación de anexos con IA tardan 20–40
+  segundos (ver pendiente #8) y eso ya se corta en el plan gratuito de
+  Netlify Functions.
+- **Siembra automática:** en Render (plan free) no hay acceso a shell tras
+  el deploy, así que no se puede correr `npm run seed` a mano. Por eso
+  `index.js` siembra los datos ficticios solo si `estudiantes` está vacía al
+  arrancar (`sembrarDatos()` en `server/src/db/seed.js`, ahora una función
+  reutilizable en vez de un script de un solo uso).
+- **Limitación a tener presente:** el disco del plan free de Render no es
+  persistente entre reinicios, y el servicio se duerme tras ~15 minutos sin
+  tráfico. Cada vez que se "despierta" es un contenedor nuevo: la base de
+  datos vuelve a sembrarse desde cero y cualquier anexo guardado durante la
+  sesión anterior se pierde. Aceptable para una demo — no para producción
+  real, donde hace falta un disco persistente (plan pago) o migrar a una
+  base de datos gestionada.
+- La `ANTHROPIC_API_KEY` se pega directamente en el panel de Render
+  (Environment), nunca en el repositorio.
+
 ## Arquitectura
 
 ```
